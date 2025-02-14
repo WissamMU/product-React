@@ -99,6 +99,14 @@ export const deleteProducts = async (req, res) => {
     // Extract ID from URL parameters its called id because we did:id if it was :somthingElse it would be somthingElse
     const { id } = req.params;
 
+      // Validate MongoDB ID format
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({
+            success: false,
+            message: "invalid Product ID"  // Returns 404 for invalid format
+        });
+    }
+
     try {
         // Attempt to delete the product by ID
         await Product.findByIdAndDelete(id);  // Mongoose method to find and remove document
@@ -111,10 +119,10 @@ export const deleteProducts = async (req, res) => {
 
     } catch (e) {
         // If error occurs during deletion
-        res.status(404).json({
+        res.status(500).json({
             success: false,
             message: "Product not found"
         });
-        console.log("Error in deleting Products: " + e.message)
+        console.log("Server Error");
     }
 }
