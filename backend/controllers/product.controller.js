@@ -18,7 +18,7 @@ export const getProducts = async (req, res) => {
     }
 }
 
-export const createProducts = async (req, res) => {
+export const createProductss = async (req, res) => {
     // Extract product data from request body
     const product = req.body;  // Expects { name, price, image } in JSON format
 

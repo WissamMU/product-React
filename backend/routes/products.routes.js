@@ -1,5 +1,5 @@
 import express from "express";
-import { getProducts , createProducts , updateProducts ,deleteProducts} from "../controllers/product.controller.js";
+import { getProducts , createProductss , updateProducts ,deleteProducts} from "../controllers/product.controller.js";
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", getProducts);
 
 // Handle POST requests to create new products
-router.post("/", createProducts);
+router.post("/", createProductss);
 
 // Handle PUT requests to update a product by ID
 router.put("/:id", updateProducts);

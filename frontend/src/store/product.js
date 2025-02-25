@@ -10,12 +10,12 @@ export const useProductStore = create((set) => ({
   setProducts: (products) => set({ products }),
 
   // Async action to create a new product
-  createProduct: async (newProduct) => {
+  createProducts: async (newProduct) => {
     // Validation: Check for required fields
     if (!newProduct.name || !newProduct.price || !newProduct.image) {
-      return { 
-        success: false, 
-        message: 'Please fill in all fields.' 
+      return {
+        success: false,
+        message: 'Please fill in all fields.'
       };
     }
 
@@ -23,8 +23,8 @@ export const useProductStore = create((set) => ({
       // API request to create product
       const res = await fetch('/api/products', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json' 
+        headers: {
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(newProduct) // Convert to JSON
       });
@@ -33,22 +33,59 @@ export const useProductStore = create((set) => ({
       const data = await res.json();
 
       // Update local state with new product
-      set((state) => ({ 
-        products: [...state.products, data.data] 
+      set((state) => ({
+        products: [...state.products, data.data]
       }));
 
       // Success response
-      return { 
-        success: true, 
-        message: 'Product added successfully.' 
+      return {
+        success: true,
+        message: 'Product added successfully.'
       };
 
     } catch (error) {
       // Handle fetch errors
-      return { 
-        success: false, 
-        message: 'Failed to add product. Please try again.' 
+      return {
+        success: false,
+        message: 'Failed to add product. Please try again.'
       };
     }
-  }
+  },
+  // Async action to fetch a product
+  fetchProducts: async () => {
+    const res = await fetch('/api/products');
+    const data = await res.json();
+    set({ products: data.data });
+  },
+  // Async action to DELETE a product
+  deleteProduct: async (pid) => {
+    const res = await fetch(`/api/products/${pid}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    if (!data.success) return { success: false, message: data.message };
+
+    // update the ui immediately, without needing a refresh
+    set((state) => ({ products: state.products.filter((product) => product._id !== pid) }));
+    return { success: true, message: data.message };
+  },
+  // Update existing product  
+  updateProduct: async (pid, updatedProduct) => {
+    const res = await fetch(`/api/products/${pid}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedProduct),
+    });
+    const data = await res.json();
+    if (!data.success) return { success: false, message: data.message };
+
+    // Update local state with modified product
+    set((state) => ({
+      products: state.products.map((product) => (product._id === pid ? data.data : product)),
+    }));
+
+    return { success: true, message: data.message };
+  },
 }));

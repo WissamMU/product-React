@@ -22,11 +22,11 @@ const CreatePage = () => {
 
   const toast = useToast();
 
-  const { createProduct } = useProductStore();
+  const { createProducts } = useProductStore();
 
   // Handler for Add Product button click
   const handleAddProduct = async () => {
-    const { success, message } = await createProduct(newProduct);
+    const { success, message } = await createProducts(newProduct);
     if (!success) {
       toast({
         title: "Error",
